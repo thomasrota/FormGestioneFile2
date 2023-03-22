@@ -97,10 +97,13 @@ namespace FormStrutture
                 {
                     riga++;
                     string[] dati = s.Split(';');
-                    if (dati[0] == nome)
+                    if(dati[3] == "0")
                     {
-                        posizione = riga;
-                        break;
+                        if (dati[0] == nome)
+                        {
+                            posizione = riga;
+                            break;
+                        }
                     }
                 }
             }
@@ -110,7 +113,7 @@ namespace FormStrutture
         {
             using (StreamWriter sw = new StreamWriter(filePath, append: true))
             {
-                sw.WriteLine($"{nome};{prezzo.ToString("0.00")};1");
+                sw.WriteLine($"{nome};{prezzo.ToString("0.00")};1;0");
             }
         }
         public void AumentaQuantità(int posizione, string filePath)
@@ -133,7 +136,7 @@ namespace FormStrutture
                         {
                             int numero = int.Parse(dati[2]);
                             numero++;
-                            sw.WriteLine($"{dati[0]};{dati[1]};{numero.ToString()}");
+                            sw.WriteLine($"{dati[0]};{dati[1]};{numero};0");
                         }
                     }
                 }
@@ -154,13 +157,16 @@ namespace FormStrutture
                     {
                         riga++;
                         string[] dati = s.Split(';');
-                        if (riga != posizione)
+                        if (dati[3] == "0")
                         {
-                            sw.WriteLine(s);
-                        }
-                        else
-                        {
-                            sw.WriteLine($"{nome};{prezzo.ToString("0.00")};{dati[2]}");
+                            if (riga != posizione)
+                            {
+                                sw.WriteLine(s);
+                            }
+                            else
+                            {
+                                sw.WriteLine($"{nome};{prezzo.ToString("0.00")};{dati[2]}");
+                            } 
                         }
                     }
                 }
@@ -180,9 +186,16 @@ namespace FormStrutture
                     while ((s = sr.ReadLine()) != null)
                     {
                         riga++;
+                        string[] dati = s.Split(';');
                         if (riga != posizione)
                         {
                             sw.WriteLine(s);
+                        }
+                        else
+                        {
+                            int numero = int.Parse(dati[2]);
+                            numero++;
+                            sw.WriteLine($"{dati[0]};{dati[1]};{dati[2]};1");
                         }
                     }
                 }
@@ -199,7 +212,10 @@ namespace FormStrutture
                 while ((s = sr.ReadLine()) != null)
                 {
                     string[] dati = s.Split(';');
-                    Lista.Items.Add($"Nome: {dati[0]}; Prezzo: {dati[1]} €; Quantità: {dati[2]};");
+                    if (dati[3] == "0")
+                    {
+                        Lista.Items.Add($"Nome: {dati[0]}; Prezzo: {dati[1]} €; Quantità: {dati[2]};");
+                    }  
                 }
             }
         }
