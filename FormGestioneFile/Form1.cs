@@ -283,7 +283,7 @@ namespace FormStrutture
                     {
                         riga++;
                         string[] dati = s.Split(';');
-                        if (dati[3] != "0")
+                        if (dati[3] == "0")
                         {
                             sw.WriteLine(s);
                         }
