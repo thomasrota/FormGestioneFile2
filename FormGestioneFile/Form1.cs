@@ -31,45 +31,63 @@ namespace FormStrutture
         }
         private void agg_Click(object sender, EventArgs e)
         {
-            int pos = Ricerca(Nome.Text, path);
-            if (pos == -1)
+            int p = Ricerca(Nome.Text, path);
+            if (p == -1)
             {
                 Aggiunta(Nome.Text, float.Parse(Prezzo.Text), path);
             }
             else
             {
-                AumentaQuantità(pos, path);
+                AumentaQuantità(p, path);
             }
             Lista.Clear();
             Visualizza(path);
         }
         private void modif_Click(object sender, EventArgs e)
         {
-            int pos = Ricerca(Nome.Text, path);
-            if (pos == -1)
+            int p = Ricerca(Nome.Text, path);
+            if (p == -1)
             {
-                MessageBox.Show("Elemento non presente!");
+                MessageBox.Show("Elemento non trovato!");
             }
             else
             {
-                Modifica(pos, NomeMod.Text, float.Parse(PrezzoMod.Text), path);
+                Modifica(p, NomeMod.Text, float.Parse(PrezzoMod.Text), path);
             }
             Lista.Clear();
             Visualizza(path);
         }
         private void delete_Click(object sender, EventArgs e)
         {
-            int pos = Ricerca(Nome.Text, path);
-            if (pos == -1)
+            int p = Ricerca(Nome.Text, path);
+            if (p == -1)
             {
-                MessageBox.Show("Elemento non presente!");
+                MessageBox.Show("Elemento non trovato!");
             }
             else
             {
-                Elimina(pos, path);
+                Elimina(p, path);
             }
             Lista.Clear();
             Visualizza(path);
+        }
+        private void racq_Click(object sender, EventArgs e)
+        {
+            int p = Ricerca(Nome.Text, path);
+            if (p == -1)
+            {
+                MessageBox.Show("Elemento non trovato!");
+            }
+            else
+            {
+                Reacquisizione(p, path);
+            }
+            Lista.Clear();
+            Visualizza(path);
+        }
+        private void comp_Click(object sender, EventArgs e)
+        {
+            Compattazione(path);
         }
         private void ext_Click(object sender, EventArgs e)
         {
@@ -88,7 +106,7 @@ namespace FormStrutture
         #region Funzioni servizio
         public int Ricerca(string nome, string filePath)
         {
-            int posizione = -1;
+            int pos = -1;
             using (StreamReader sr = File.OpenText(filePath))
             {
                 string s;
@@ -101,13 +119,13 @@ namespace FormStrutture
                     {
                         if (dati[0] == nome)
                         {
-                            posizione = riga;
+                            pos = riga;
                             break;
                         }
                     }
                 }
             }
-            return posizione;
+            return pos;
         }
         public void Aggiunta(string nome, float prezzo, string filePath)
         {
@@ -196,6 +214,58 @@ namespace FormStrutture
                             int numero = int.Parse(dati[2]);
                             numero++;
                             sw.WriteLine($"{dati[0]};{dati[1]};{dati[2]};1");
+                        }
+                    }
+                }
+            }
+            File.Delete(filePath);
+            File.Move("ListaTemp.csv", filePath);
+            File.Delete("ListaTemp.csv");
+        }
+        public void Reacquisizione(int posizione, string filePath)
+        {
+            using (StreamReader sr = File.OpenText(filePath))
+            {
+                string s;
+                using (StreamWriter sw = new StreamWriter("ListaTemp.csv", append: true))
+                {
+                    int riga = 0;
+                    while ((s = sr.ReadLine()) != null)
+                    {
+                        riga++;
+                        string[] dati = s.Split(';');
+                        if (riga != posizione)
+                        {
+                            sw.WriteLine(s);
+                        }
+                        else
+                        {
+                            int numero = int.Parse(dati[2]);
+                            numero++;
+                            sw.WriteLine($"{dati[0]};{dati[1]};{dati[2]};0");
+                        }
+                    }
+                }
+            }
+            File.Delete(filePath);
+            File.Move("ListaTemp.csv", filePath);
+            File.Delete("ListaTemp.csv");
+        }
+        public void Compattazione(string filePath)
+        {
+            using (StreamReader sr = File.OpenText(filePath))
+            {
+                string s;
+                using (StreamWriter sw = new StreamWriter("ListaTemp.csv", append: true))
+                {
+                    int riga = 0;
+                    while ((s = sr.ReadLine()) != null)
+                    {
+                        riga++;
+                        string[] dati = s.Split(';');
+                        if (dati[3] != "0")
+                        {
+                            sw.WriteLine(s);
                         }
                     }
                 }
