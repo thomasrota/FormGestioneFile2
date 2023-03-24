@@ -73,7 +73,7 @@ namespace FormStrutture
         }
         private void racq_Click(object sender, EventArgs e)
         {
-            int p = Ricerca(Nome.Text, path);
+            int p = RicercaReacquisizione(Nome.Text, path);
             if (p == -1)
             {
                 MessageBox.Show("Elemento non trovato!");
@@ -122,6 +122,26 @@ namespace FormStrutture
                             pos = riga;
                             break;
                         }
+                    }
+                }
+            }
+            return pos;
+        }
+        public int RicercaReacquisizione(string nome, string filePath)
+        {
+            int pos = -1;
+            using (StreamReader sr = File.OpenText(filePath))
+            {
+                string s;
+                int riga = 0;
+                while ((s = sr.ReadLine()) != null)
+                {
+                    riga++;
+                    string[] dati = s.Split(';');
+                    if (dati[0] == nome)
+                    {
+                        pos = riga;
+                        break;
                     }
                 }
             }
